@@ -1,0 +1,90 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Interfaces\SocialAssistanceRepositoryInterface;
+use App\Models\SocialAssistance;
+use Illuminate\Support\Facades\DB;
+
+class SocialAssistanceRepository implements SocialAssistanceRepositoryInterface
+{
+    public function getAll(
+        ?string $search,
+        ?int $limit,
+        bool $execute
+    ) {
+        $query = SocialAssistance::where(function ($query) use ($search) {
+            if ($search) {
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('description', 'like', '%' . $search . '%');
+            }
+        });
+
+        if ($limit) {
+            $query->take($limit);
+        }
+
+        return $execute ? $query->get() : $query;
+    }
+
+    public function getAllPaginated(
+        ?string $search,
+        ?int $rowPerPage
+    ) {
+        $query = $this->getAll(
+            $search,
+            $rowPerPage,
+            false
+        );
+
+        return $query->paginate($rowPerPage);
+    }
+
+    public function getById(string $id)
+    {
+        return SocialAssistance::find($id);
+    }
+
+    public function create(array $data)
+    {
+        DB::beginTransaction();
+        try {
+            $socialAssistance = new SocialAssistance();
+            $socialAssistance->thumbnail = $data['thumbnail']->store('assets/social-assistances', 'public');
+            $socialAssistance->name = $data['name'];
+            $socialAssistance->category = $data['category'];
+            $socialAssistance->amount = $data['amount'];
+            $socialAssistance->provider = $data['provider'];
+            $socialAssistance->description = $data['description'];
+            $socialAssistance->is_available = $data['is_available'];
+            $socialAssistance->save();
+            DB::commit();
+            return $socialAssistance;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
+
+    public function update(string $id, array $data)
+    {
+        $socialAssistance = SocialAssistance::find($id);
+
+        if (!$socialAssistance) {
+            return false;
+        }
+
+        return $socialAssistance->update($data);
+    }
+
+    public function delete(string $id)
+    {
+        $socialAssistance = SocialAssistance::find($id);
+
+        if (!$socialAssistance) {
+            return false;
+        }
+
+        return $socialAssistance->delete();
+    }
+}

@@ -1,0 +1,69 @@
+<?php
+
+namespace App\Repositories;
+
+namespace App\Interfaces;
+
+use App\Models\SocialAssistance;
+use App\Interfaces\SocialAssistanceRepositoryInterface;
+
+
+class SocialAssistanceRepository implements SocialAssistanceRepositoryInterface
+
+{
+    public function getAll(?string $search, ?int $limit, bool $execute)
+    /**
+     * Get all social assistance.
+     *
+     * @param string|null $search
+     * @param int|null $limit
+     * @param bool $execute
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Collection
+     */
+    {
+        $query = SocialAssistance::query();
+
+        if ($search) {
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        if ($limit) {
+            $query->limit($limit);
+        }
+
+        return $execute ? $query->get() : $query;
+    }
+
+    public function getAllPaginated(?string $search, ?int $rowPerPage)
+    {
+        $query = SocialAssistance::query();
+
+        if ($search) {
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        return $query->paginate($rowPerPage ?? 10);
+    }
+
+    public function getById(string $id)
+    {
+        return SocialAssistance::find($id);
+    }
+
+    public function create(array $data)
+    {
+        return SocialAssistance::create($data);
+    }
+
+    public function update(string $id, array $data)
+    {
+        $model = SocialAssistance::findOrFail($id);
+        $model->update($data);
+        return $model;
+    }
+
+    public function delete(string $id)
+    {
+        return SocialAssistance::destroy($id);
+    }
+}
