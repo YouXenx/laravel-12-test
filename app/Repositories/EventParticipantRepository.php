@@ -56,7 +56,13 @@ class EventParticipantRepository implements EventParticipantRepositoryInterface
             $eventParticipant = new EventParticipant();
             $eventParticipant->event_id = $data['event_id'];
             $eventParticipant->head_of_family_id = $data['head_of_family_id'];
-            $eventParticipant->quantity = $data['quantity'];
+
+            if (isset($data['quantity'])) {
+                $eventParticipant->quantity = $data['quantity'];
+            }else{
+                $data['quantity'] = $eventParticipant->quantity;
+            }
+
             $eventParticipant->total_price = $event->price * $data['quantity'];
             $eventParticipant->payment_status = 'pending';
             $eventParticipant->save();

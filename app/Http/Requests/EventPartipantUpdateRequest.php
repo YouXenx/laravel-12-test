@@ -8,14 +8,6 @@ use Illuminate\Foundation\Http\FormRequest;
 class EventPartipantUpdateRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return false;
-    }
-
-    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, ValidationRule|array<mixed>|string>
@@ -23,7 +15,21 @@ class EventPartipantUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'event_id' => 'required|exists:events,id',
+            'head_of_family_id' => 'required|exists:head_of_families,id',
+            'quantity' => 'nullable|integer',
+            'payment_status' => 'nullable|string'
+        ];
+    }
+
+
+    public function attributes()
+    {
+        return [
+            'event_id' => 'Event',
+            'head_of_family_id' => 'Kepala Keluarga',
+            'quantity' => 'Jumlah',
+            'payment_status' => 'Status Pembayaran'
         ];
     }
 }
