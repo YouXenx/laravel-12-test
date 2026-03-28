@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ResponseHelper;
 use App\Http\Requests\EventParticipantStoreRequest;
+use App\Http\Requests\EventPartipantUpdateRequest;
 use App\Http\Resources\EventParticipantResource;
 use App\Http\Resources\PaginateResource;
 use App\Interfaces\EventParticipantRepositoryInterface;
@@ -80,7 +81,7 @@ class EventParticipantController extends Controller
                 return ResponseHelper::jsonResponse(false, 'Data Pendaftar Event Tidak Ditemukan', null, 404);
             }
 
-            return ResponseHelper::jsonResponse(true, 'Data Pendaftar Event Berhasil Diambil', new EventParticipantResource($event), 201);
+            return ResponseHelper::jsonResponse(true, 'Data Pendaftar Event Berhasil Diupdate', new EventParticipantResource($event), 201);
 
         } catch (\Throwable $e) {
             return ResponseHelper::jsonResponse(false, $e->getMessage(), null, 500);
@@ -90,9 +91,25 @@ class EventParticipantController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+
+     public function update(EventPartipantUpdateRequest $request, string $id)
     {
-        //
+        $data = $request->validated(); // ✅ BENAR
+
+        try {
+            $event = $this->eventParticipantRepository->getById($id);
+
+            if (!$event) {
+                return ResponseHelper::jsonResponse(false, 'Data Pendaftar Event Tidak Ditemukan', null, 404);
+            }
+
+            $eventParticipants = $this->eventParticipantRepository->update($id, $data);
+
+            return ResponseHelper::jsonResponse(true, 'Data Pendaftar Event Berhasil Diambil', new EventParticipantResource($eventParticipants), 200);
+
+        } catch (\Throwable $e) {
+            return ResponseHelper::jsonResponse(false, $e->getMessage(), null, 500);
+        }
     }
 
     /**
