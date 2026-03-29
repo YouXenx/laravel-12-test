@@ -21,6 +21,8 @@ class Development extends Model
         'status',
     ];
 
+    protected $casts = ['amount' => 'decimal:2'];
+
     public function developmentApplicants()
     {
         return $this->hasMany(DevelopmentApplicant::class);

@@ -9,7 +9,6 @@ use App\Http\Resources\EventResource;
 use App\Http\Resources\PaginateResource;
 use App\Interfaces\EventRepositoryInterface;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 class EventController extends Controller
 {
@@ -112,7 +111,7 @@ class EventController extends Controller
 
             // Jika ada file thumbnail baru, simpan
             if ($request->hasFile('thumbnail') && $request->file('thumbnail')->isValid()) {
-                $data['thumbnail'] = $request->file('thumbnail')->store('assets/events', 'public');
+                $data[ 'thumbnail'] = $request->file('thumbnail')->store('assets/events', 'public');
             }
 
             // Update event

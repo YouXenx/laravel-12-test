@@ -97,9 +97,9 @@ class EventParticipantController extends Controller
         $data = $request->validated(); // ✅ BENAR
 
         try {
-            $event = $this->eventParticipantRepository->getById($id);
+            $eventParticipants = $this->eventParticipantRepository->getById($id);
 
-            if (!$event) {
+            if (!$eventParticipants) {
                 return ResponseHelper::jsonResponse(false, 'Data Pendaftar Event Tidak Ditemukan', null, 404);
             }
 
@@ -117,6 +117,20 @@ class EventParticipantController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        
+        try {
+            $eventParticipants = $this->eventParticipantRepository->getById($id);
+
+            if (!$eventParticipants) {
+                return ResponseHelper::jsonResponse(false, 'Data Pendaftar Event Tidak Ditemukan', null, 404);
+            }
+
+            $eventParticipants = $this->eventParticipantRepository->delete($id);
+
+            return ResponseHelper::jsonResponse(true, 'Data Pendaftar Event Berhasil Dihapus', null, 200);
+
+        } catch (\Throwable $e) {
+            return ResponseHelper::jsonResponse(false, $e->getMessage(), null, 500);
+        }
     }
 }

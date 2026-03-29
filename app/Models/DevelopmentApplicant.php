@@ -3,18 +3,26 @@
 namespace App\Models;
 
 use App\Traits\UUID;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DevelopmentApplicant extends Model
 {
-    use SoftDeletes, UUID;
+    use HasFactory, SoftDeletes, UUID;
 
     protected $fillable = [
         'development_id',
         'user_id',
         'status'
     ];
+
+    public function scopeSearch($query, $search)
+{
+    return $query->whereHas('user', fn($q) => 
+        $q->where('name', 'like', "%$search%")
+    )->with('user'); // load relasi supaya aman
+}
 
 
     public function development()
