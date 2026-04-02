@@ -10,6 +10,8 @@ use App\Http\Controllers\SocialAssistanceController;
 use App\Http\Controllers\SocialAssistanceRecipientController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+
 
 Route::apiResource('user', UserController::class);
 Route::get('user/all/paginated', [UserController::class, 'getAllPaginated']);
@@ -37,4 +39,8 @@ Route::get('development/all/paginated', [DevelopmentController::class, 'getAllPa
 
 Route::apiResource('development-applicant', DevelopmentApplicantController::class);
 Route::get('development-applicant/all/paginated', [DevelopmentApplicantController::class, 'getAllPaginated']);
+
+Route::apiResource('profile', ProfileController::class);
+Route::get('profile/all/paginated', [ProfileController::class, 'getAllPaginated']);
+
 
