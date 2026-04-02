@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ProfileStoreRequest extends FormRequest
@@ -28,7 +27,7 @@ class ProfileStoreRequest extends FormRequest
             'people' => 'required|integer',
             'agricultural_area' => 'required|integer',
             'total_area' => 'required|integer',
-            'profile_images' => 'required|array',
+            'profile_images' => 'nullable|array',
             'profile_images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }

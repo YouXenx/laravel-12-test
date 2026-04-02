@@ -45,12 +45,23 @@ class ProfileController extends Controller
 
     public function store(ProfileStoreRequest $request)
     {
-
         $request = $request->validated();
         $profile = $this->profileRepository->create($request);
         try {
             $profile = $this->profileRepository->create($request);
             return ResponseHelper::jsonResponse(true, 'Data Profile Berhasil Dibuat', new ProfileResource($profile), 201);
+        } catch (\Throwable $th) {
+            return ResponseHelper::jsonResponse(false, $th->getMessage(), null, 500);
+        }
+    }
+
+    public function update(ProfileStoreRequest $request)
+    {
+        $request = $request->validated();
+        $profile = $this->profileRepository->update($request);
+        try {
+            $profile = $this->profileRepository->update($request);
+            return ResponseHelper::jsonResponse(true, 'Data Profile Berhasil Diupdate', new ProfileResource($profile), 200);
         } catch (\Throwable $th) {
             return ResponseHelper::jsonResponse(false, $th->getMessage(), null, 500);
         }

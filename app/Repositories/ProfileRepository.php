@@ -17,20 +17,20 @@ class ProfileRepository implements ProfileRepositoryInterface
     public function create(array $data)
     {
         DB::beginTransaction();
-    
+
         try {
             $profile = new Profile();
-    
+
             $profile->thumbnail = $data['thumbnail']->store('assets/profiles', 'public');
             $profile->name = $data['name'];
             $profile->about = $data['about'] ?? null;
             $profile->headman = $data['headman'];
             $profile->people = $data['people'];
-            $profile->agricultural = $data['agricultural_area'];
+            $profile->agricultural_area = $data['agricultural_area']; // <-- fix nama kolom
             $profile->total_area = $data['total_area'];
-    
+
             $profile->save();
-    
+
             // Multiple images
             $images = $data['images'] ?? $data['profile_images'] ?? [];
             foreach ($images as $image) {
@@ -38,11 +38,11 @@ class ProfileRepository implements ProfileRepositoryInterface
                     'image' => $image->store('assets/profiles', 'public'),
                 ]);
             }
-    
+
             DB::commit();
-    
+
             return $profile;
-    
+
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
