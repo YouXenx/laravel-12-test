@@ -13,7 +13,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 
 
-Route::apiResource('user', UserController::class);
+Route::middleware('auth:sanctum')->group(function(){
+    Route::apiResource('user', UserController::class);
 Route::get('user/all/paginated', [UserController::class, 'getAllPaginated']);
 
 Route::apiResource('head-of-family', HeadOfFamilyController::class);
@@ -42,5 +43,6 @@ Route::get('development-applicant/all/paginated', [DevelopmentApplicantControlle
 
 Route::apiResource('profile', ProfileController::class);
 Route::get('profile/all/paginated', [ProfileController::class, 'getAllPaginated']);
+});
 
 

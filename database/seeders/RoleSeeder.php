@@ -8,27 +8,63 @@ use Spatie\Permission\Models\Role;
 
 class RoleSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        $guard = config('auth.defaults.guard', 'web');
+        $guard = 'api'; // 🔥 biar konsisten
 
-        $allForGuard = Permission::query()->where('guard_name', $guard)->get();
+        $permissions = [
+            'dashboard-menu',
+            'family-member-menu',
+            'family-member-list',
+            'family-member-create',
+            'family-member-edit',
+            'family-member-delete',
 
-        $superAdmin = Role::firstOrCreate([
-            'name' => 'super-admin',
+            'social-assistance-menu',
+            'social-assistance-list',
+
+            'social-assistance-recipient-menu',
+            'social-assistance-recipient-list',
+            'social-assistance-recipient-create',
+            'social-assistance-recipient-edit',
+            'social-assistance-recipient-delete',
+
+            'event-menu',
+            'event-list',
+
+            'event-participant-menu',
+            'event-participant-list',
+            'event-participant-create',
+            'event-participant-edit',
+            'event-participant-delete',
+
+            'development-menu',
+            'development-list',
+
+            'development-applicant-menu',
+            'development-applicant-list',
+            'development-applicant-create',
+            'development-applicant-edit',
+            'development-applicant-delete',
+
+            'profile-menu',
+        ];
+
+        // 🔥 create permissions (ALL sanctum)
+        foreach ($permissions as $perm) {
+            Permission::firstOrCreate([
+                'name' => $perm,
+                'guard_name' => $guard,
+            ]);
+        }
+
+        // 🔥 create role admin
+        $role = Role::firstOrCreate([
+            'name' => 'admin',
             'guard_name' => $guard,
         ]);
-        $superAdmin->syncPermissions($allForGuard);
 
-        $operator = Role::firstOrCreate([
-            'name' => 'operator',
-            'guard_name' => $guard,
-        ]);
-        $operator->syncPermissions(
-            $allForGuard->filter(fn (Permission $p) => ! str_ends_with($p->name, '.delete'))
-        );
+        // 🔥 sync permission (lebih aman daripada givePermissionTo all)
+        $role->syncPermissions(Permission::where('guard_name', $guard)->get());
     }
 }

@@ -2,17 +2,25 @@
 
 namespace Database\Seeders;
 
-use Database\Factories\UserFactory;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User as UserModel;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        UserFactory::new()->count(15)->create();
+        $user = UserModel::firstOrCreate(
+            ['email' => 'admin@app.com'],
+            [
+                'name' => 'Admin',
+                'password' => Hash::make('password'),
+            ]
+        );
+
+        $user->assignRole('admin');
+
+        UserModel::factory()->count(15)->create();
     }
 }
