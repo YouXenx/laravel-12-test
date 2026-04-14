@@ -9,7 +9,6 @@ use App\Interfaces\HeadOfFamilyRepositoryInterface;
 use Illuminate\Http\Request;
 use App\Http\Resources\HeadOfFamilyResource;
 use App\Http\Resources\PaginateResource;
-use App\Models\HeadOfFamily;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Spatie\Permission\Middleware\PermissionMiddleware;

@@ -10,15 +10,23 @@ class RoleSeeder extends Seeder
 {
     public function run(): void
     {
-        $guard = 'api'; // 🔥 biar konsisten
+        $guard = 'sanctum'; // 🔥 biar konsisten
 
         $permissions = [
             'dashboard-menu',
+
+
             'family-member-menu',
             'family-member-list',
             'family-member-create',
             'family-member-edit',
             'family-member-delete',
+
+            'head-of-family-menu',
+            'head-of-family-list',
+            'head-of-family-create',
+            'head-of-family-edit',
+            'head-of-family-delete',
 
             'social-assistance-menu',
             'social-assistance-list',
