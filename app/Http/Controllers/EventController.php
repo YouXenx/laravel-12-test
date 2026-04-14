@@ -20,6 +20,16 @@ class EventController extends Controller
         $this->eventRepository = $eventRepository;
     }
 
+    public static function middleware()
+    {
+        return [
+            new Middleware(PermissionMiddleware::using(['social-assistance-list|social-assistance-create|social-assistance-edit|social-assistance-delete']), only: ['index', 'getAllPaginated', 'show']),
+            new Middleware(PermissionMiddleware::using(['social-assistance-create']), only: ['store']),
+            new Middleware(PermissionMiddleware::using(['social-assistance-create']), only: ['update']),
+            new Middleware(PermissionMiddleware::using(['social-assistance-create']), only: ['destroy']),
+        ];
+    }
+
     public function index(Request $request)
     {
         $search = $request->query('search'); // bisa null atau string

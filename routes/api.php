@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DevelopmentApplicantController;
 use App\Http\Controllers\DevelopmentController;
 use App\Http\Controllers\EventController;
@@ -44,5 +45,17 @@ Route::get('development-applicant/all/paginated', [DevelopmentApplicantControlle
 Route::apiResource('profile', ProfileController::class);
 Route::get('profile/all/paginated', [ProfileController::class, 'getAllPaginated']);
 });
+
+
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/register', [AuthController::class, 'register'])->name('register');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/me', [AuthController::class, 'me'])->name('me');
+
+
+
+
+
+
 
 

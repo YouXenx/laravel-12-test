@@ -8,6 +8,8 @@ use App\Helpers\ResponseHelper;
 use App\Http\Resources\SocialAssistanceRecipientResource;
 use App\Http\Requests\SocialAssistanceRecipientStoreRequest;
 use App\Http\Requests\SocialAssistanceRecipientUpdateRequest;
+use Illuminate\Routing\Controllers\Middleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
 use Symfony\Component\HttpFoundation\Response;
 
 class SocialAssistanceRecipientController extends Controller
@@ -19,62 +21,72 @@ class SocialAssistanceRecipientController extends Controller
         $this->socialAssistanceRecipientRepository = $socialAssistanceRecipientRepository;
     }
 
+    public static function middleware()
+    {
+        return [
+            new Middleware(PermissionMiddleware::using(['-recipient-list|-recipient-create|-recipient-edit|-recipient-delete']), only: ['index', 'getAllPaginated', 'show']),
+            new Middleware(PermissionMiddleware::using(['-recipient-create']), only: ['store']),
+            new Middleware(PermissionMiddleware::using(['-recipient-create']), only: ['update']),
+            new Middleware(PermissionMiddleware::using(['-recipient-create']), only: ['destroy']),
+        ];
+    }
+
     public function index(Request $request)
-{
-    try {
-        $socialAssistanceRecipients = $this->socialAssistanceRecipientRepository->getAll(
-            $request->search,
-            $request->limit,
-            true
-        );
+    {
+        try {
+            $socialAssistanceRecipients = $this->socialAssistanceRecipientRepository->getAll(
+                $request->search,
+                $request->limit,
+                true
+            );
 
-        // pastikan ini collection
-        $socialAssistanceRecipients->load([
-            'socialAssistance',
-            'headOfFamily'
-        ]);
+            // pastikan ini collection
+            $socialAssistanceRecipients->load([
+                'socialAssistance',
+                'headOfFamily'
+            ]);
 
-        return ResponseHelper::jsonResponse(
-            true,
-            'Data Bantuan Sosial Penerima Berhasil Diambil',
-            SocialAssistanceRecipientResource::collection($socialAssistanceRecipients),
-            200
-        );
+            return ResponseHelper::jsonResponse(
+                true,
+                'Data Bantuan Sosial Penerima Berhasil Diambil',
+                SocialAssistanceRecipientResource::collection($socialAssistanceRecipients),
+                200
+            );
 
-    } catch (\Exception $e) {
-        return ResponseHelper::jsonResponse(false, $e->getMessage(), null, 500);
+        } catch (\Exception $e) {
+            return ResponseHelper::jsonResponse(false, $e->getMessage(), null, 500);
+        }
     }
-}
 
-public function getAllPaginated(Request $request)
-{
-    try {
+    public function getAllPaginated(Request $request)
+    {
+        try {
 
-        $limit = $request->limit ?? 10;
+            $limit = $request->limit ?? 10;
 
-        $socialAssistanceRecipients = $this->socialAssistanceRecipientRepository->getAllPaginated(
-            $request->search,
-            $limit
-        );
+            $socialAssistanceRecipients = $this->socialAssistanceRecipientRepository->getAllPaginated(
+                $request->search,
+                $limit
+            );
 
-        return ResponseHelper::jsonResponse(
-            true,
-            'Data Bantuan Sosial Penerima Berhasil Diambil',
-            SocialAssistanceRecipientResource::collection($socialAssistanceRecipients),
-            200
-        );
+            return ResponseHelper::jsonResponse(
+                true,
+                'Data Bantuan Sosial Penerima Berhasil Diambil',
+                SocialAssistanceRecipientResource::collection($socialAssistanceRecipients),
+                200
+            );
 
-    } catch (\Exception $e) {
+        } catch (\Exception $e) {
 
-        return ResponseHelper::jsonResponse(
-            false,
-            $e->getMessage(),
-            null,
-            500
-        );
+            return ResponseHelper::jsonResponse(
+                false,
+                $e->getMessage(),
+                null,
+                500
+            );
 
+        }
     }
-}
 
     /**
      * Store a newly created resource in storage.

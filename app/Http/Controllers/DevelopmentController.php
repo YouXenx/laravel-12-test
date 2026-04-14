@@ -9,8 +9,11 @@ use App\Http\Resources\DevelopmentResource;
 use App\Http\Resources\PaginateResource;
 use App\Interfaces\DevelopmentRepositoryInterface;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
 
-class DevelopmentController extends Controller
+class DevelopmentController extends Controller implements HasMiddleware
 {
 
     private DevelopmentRepositoryInterface $developmentRepository;
@@ -22,6 +25,17 @@ class DevelopmentController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+     public static function middleware()
+     {
+         return [
+             new Middleware(PermissionMiddleware::using(['development-list|development-create|development-edit|development-delete']), only: ['index', 'getAllPaginated', 'show']),
+             new Middleware(PermissionMiddleware::using(['development-create']), only: ['store']),
+             new Middleware(PermissionMiddleware::using(['development-create']), only: ['update']),
+             new Middleware(PermissionMiddleware::using(['development-create']), only: ['destroy']),
+         ];
+     }
+
     public function index(Request $request)
     {
         $search = $request->query('search'); // bisa null atau string
